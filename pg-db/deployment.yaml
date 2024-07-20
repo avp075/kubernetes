@@ -15,12 +15,12 @@ spec:
         app: sonarqube
     spec:
       initContainers:
-        - name: sysctl
-          image: sonarqube:10.4-community
-          securityContext:
-            privileged: true
-            runAsUser: 0
-          command: ['sh', '-c', 'sysctl -w vm.max_map_count=262144']
+      - name: sysctl
+        image: sonarqube:10.4-community
+        securityContext:
+          privileged: true
+          runAsUser: 0
+        command: ['sh', '-c', 'sysctl -w vm.max_map_count=262144']
       containers:
       - name: sonarqube
         image: sonarqube:10.4-community
