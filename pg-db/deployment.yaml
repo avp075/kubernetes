@@ -26,11 +26,20 @@ spec:
         image: sonarqube:10.4-community
         env:
         - name: SONAR_JDBC_URL
-          value: jdbc:postgresql://172.24.47.198:5432/sonar
+          valueFrom:
+            configMapKeyRef:
+              name: sonarqube-configmap
+              key: JDBC_URL
         - name: SONAR_JDBC_USERNAME
-          value: sonar
+          valueFrom:
+            secretKeyRef:
+              name: sonarqube-secret
+              key: JDBC_USERNAME
         - name: SONAR_JDBC_PASSWORD
-          value: admin
+          valueFrom:
+            secretKeyRef:
+              name: sonarqube-secret
+              key: JDBC_PASSWORD
         ports:
         - containerPort: 9000
         imagePullPolicy: IfNotPresent
