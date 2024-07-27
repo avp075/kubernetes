@@ -43,3 +43,7 @@ spec:
         ports:
         - containerPort: 9000
         imagePullPolicy: IfNotPresent
+
+
+#After the editing postgresql.conf	 and pg_hba.conf restart postgresql server: sudo service postgresql restart	
+#docker run -d --name sonar-postgres -e POSTGRES_USER=sonar -e POSTGRES_PASSWORD=sonar  -p 5432:5432 postgres
