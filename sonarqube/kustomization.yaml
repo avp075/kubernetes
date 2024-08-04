@@ -6,3 +6,4 @@ Namespace: sonarqube-ns
 resources:
 - app
 - db
+- namespace.yaml
