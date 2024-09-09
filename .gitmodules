@@ -1,3 +1,0 @@
-[submodule "argocd-example"]
-	path = argocd-example
-	url = https://gitlab.com/Tanmay-Bhat/argocd.git
