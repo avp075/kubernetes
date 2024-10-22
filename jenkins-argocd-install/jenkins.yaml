@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: jenkins-with-argocd
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/avp075/kubernetes.git
+    targetRevision: HEAD
+    path: jenkins-base-install
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: jenkins
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

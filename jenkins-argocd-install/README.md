@@ -1,0 +1,1 @@
+kubectl -n jenkins port-forward services/jenkins-service 8080:8080 &
