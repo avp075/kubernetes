@@ -1,0 +1,1 @@
+minikube start --driver=docker --insecure-registry="quay.io,ghcr.io,github.com,raw.githubusercontent.com,hub.docker.com,dl.min.io" --memory 3000 --force
