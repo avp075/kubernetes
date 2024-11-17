@@ -8,3 +8,4 @@ patches:
 - path: patches/argocd-cm.yaml
 - path: argocd-server-deployment.yaml
 - path: patches/argocd-repo-server-deployment.yaml
+- path: patches/argocd-rbac-cm.yaml
