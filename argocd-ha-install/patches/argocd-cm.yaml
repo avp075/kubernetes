@@ -4,4 +4,4 @@ metadata:
   name: argocd-cm
 data:
   timeout.reconciliation: 300s
-  accounts.alina: apiKey, login
+  accounts.aviral: apiKey, login
