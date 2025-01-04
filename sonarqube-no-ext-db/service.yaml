@@ -10,4 +10,5 @@ spec:
   - nodePort: 31000
     port: 9000
     targetPort: 9000
+    
 # minikube service sonarqube-service
