@@ -5,8 +5,9 @@ metadata:
 spec:
   selector:
     app: sonarqube
-  type: ClusterIP
+  type: NodePort
   ports:
-  - protocol: TCP
+  - nodePort: 31000
     port: 9000
     targetPort: 9000
+# minikube service sonarqube-service
