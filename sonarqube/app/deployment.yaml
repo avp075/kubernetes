@@ -23,7 +23,7 @@ spec:
         command: ['sh', '-c', 'sysctl -w vm.max_map_count=262144']
       containers:
       - name: sonarqube
-        image: sonarqube:9.4-community
+        image: sonarqube:10.4-community
         env:
         - name: SONAR_JDBC_URL
           valueFrom:
