@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: argo-cicd-demo-
+spec:
+  entrypoint: main
+  templates:
+  - name: main
+    dag:
+      tasks:
+      - name: checkout
+        template: echo
+        arguments:
+          parameters: [{name: message, value: "Running task checkout"}]
+      - name: build
+        template: echo
+        dependencies: [source]
+        arguments:
+          parameters: [{name: message, value: "Running task build "}]
+      - name: test
+        template: echo
+        dependencies: [build]
+        arguments:
+          parameters: [{name: message, value: "Running task test"}]
+      - name: deploy
+        template: echo
+        dependencies: [test]
+        arguments:
+          parameters: [{name: message, value: "Running task deploy"}]
+
+  - name: echo
+    inputs:
+      parameters:
+      - name: message
+    container:
+      image: alpine:latest
+      command: [echo, "{{inputs.parameters.message}}"]

@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+    options {
+        // Timeout counter starts AFTER agent is allocated
+        timeout(time: 600, unit: 'SECONDS')
+    }
+    stages {
+        stage('coce checkout') {
+            steps {
+                sh 'git clone ??'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'mvn -B clean install'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'mvn sonar:sonar'
+            }
+        }
+        stage('Deploy in Test') {
+            steps {
+                sh 'ansible-playbook deploy-in-test.yaml'
+            }
+        }
+        stage('Deploy in Production') {
+            steps {
+                **Wait for Approval**
+               sh 'ansible-playbook deploy-in-production.yaml'
+            }
+        }
+    }
+}
