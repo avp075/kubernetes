@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: argocd-example-apps
+  labels:
+    argocd.argoproj.io/secret-type: repository
+type: Opaque
+stringData:
+  project: my-project1                                     # Project scoped 
+  name: argocd-example-apps
+  url: https://github.com/argoproj/argocd-example-apps.git
+  username: ****
+  password: ****
