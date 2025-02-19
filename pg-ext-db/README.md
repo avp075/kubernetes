@@ -1,2 +1,0 @@
-# kubernetes
-kustomize, helm, Argocd

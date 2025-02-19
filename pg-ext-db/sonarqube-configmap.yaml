@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: sonarqube-configmap
-data:
-  JDBC_URL: jdbc:postgresql://172.24.47.198:5432/sonar
-
-
-
