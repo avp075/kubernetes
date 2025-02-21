@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: argocd-server
 spec:
-  replicas: 3
+  replicas: 3 
   template:
     spec:
       containers:
