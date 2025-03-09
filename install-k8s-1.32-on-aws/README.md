@@ -8,6 +8,7 @@ Change the hostnames on each node for easier identification and name resolution.
 `sudo hostnamectl set-hostname controlplane`  
 `sudo hostnamectl set-hostname worker1`  
 `sudo hostnamectl set-hostname worker2`  
+`sudo hostnamectl set-hostname worker3`  
 
 # 2. Verify mac addresses and product uid are unique:
 Each node is likely to have a unique UUID and MAC address, but it’s a good idea to verify
