@@ -99,9 +99,9 @@ Just an example command:
 **make sure traffic is allowed between these nodes; otherwise, worker nodes cannot join the cluster. Check the security groups or firewall rules if necessary**  
 
 ## 3. Install networking plugin – calico  
-`kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/tigera-operator.yaml  
-kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/custom-resources.yaml  
-watch kubectl get pods -n calico-system`  
+`kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/tigera-operator.yaml`  
+`kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/custom-resources.yaml`  
+`watch kubectl get pods -n calico-system`  
 
 **If you have used different pod network, update custom-resources yaml file  
 
