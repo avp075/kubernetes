@@ -115,13 +115,11 @@ switch to a regular user and list nodes using kubectl
 
 # Setup your machine to access cluster from  
 ## 1. Installing Kubectl on you machine  
-`sudo apt-get update  
-RELEASE="$(curl -sSL https://dl.k8s.io/release/stable.txt | sed 's/\.0//')"  
-sudo apt-get install -y apt-transport-https ca-certificates curl gpg  
-curl -fsSL "https://pkgs.k8s.io/core:/stable:/${RELEASE}/deb/Release.key" | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg  
-echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/${RELEASE}/deb/ /" > sudo tee /etc/apt/sources.list.d/kubernetes.list  
-sudo apt-get update  
-sudo apt-get install -y kubectl`  
+
+`echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list`  
+`curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg`  
+`sudo apt-get update`  
+`sudo apt-get install -y kubectl`  
 
 ## 2. Move the config file
 `scp root@<control-plane-ip>:/etc/kubernetes/admin.conf .kube/conf`  
