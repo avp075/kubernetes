@@ -1,6 +1,0 @@
-apiVersion: v2
-name: sonarqube-helm-chart
-description: A Helm chart for SonarQube Community Edition
-type: application
-version: 0.1.0
-appVersion: 10.0.0 # Change to the desired SonarQube version
