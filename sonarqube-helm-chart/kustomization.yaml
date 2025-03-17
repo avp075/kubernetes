@@ -6,7 +6,7 @@ helmCharts:
     releaseName: sonarqube
     namespace: sonarqube
     version: 0.1.0
-    repo: "https://github.com/your-github-user/your-helm-repo.git"  
+    repo: "https://github.com/avp075/kubernetes/tree/main/sonarqube-helm-chart"  
     valuesFile: ./values/dev/values.yaml  # Specify the values file
 
 resources: []
