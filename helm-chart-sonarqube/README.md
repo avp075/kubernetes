@@ -8,5 +8,7 @@ This Helm chart deploys SonarQube using the official SonarQube Community Edition
 2. Install the chart:
 
 ```bash
-helm install sonarqube ./sonarqube-helm
+helm list --all-namespaces
+helm install sonarqube ./sonarqube-helm-chart --create-namespace --namespace sonarqube
+helm uninstall sonarqube --namespace sonarqube
 
