@@ -1,5 +1,5 @@
 
-# Single Node Openshift on AWS
+# Install Openshift on AWS
 
 ```
 Creating and configuring the Route 53 service
