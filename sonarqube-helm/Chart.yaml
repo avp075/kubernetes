@@ -1,0 +1,6 @@
+apiVersion: v2
+name: sonarqube
+description: A Helm chart for deploying SonarQube
+version: 0.1.0
+appVersion: "9.9.0"  # Adjust to the current SonarQube version
+

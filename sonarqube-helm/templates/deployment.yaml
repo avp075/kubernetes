@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-sonarqube
+  namespace: {{ .Values.namespace }}  # Set the namespace explicitly
+  labels:
+    app: sonarqube
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sonarqube
+  template:
+    metadata:
+      labels:
+        app: sonarqube
+    spec:
+      containers:
+        - name: sonarqube
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          ports:
+            - containerPort: 9000
+          env:
+            - name: SONARQUBE_JDBC_URL
+              value: "jdbc:postgresql://{{ .Values.sonar.db.host }}:{{ .Values.sonar.db.port }}/{{ .Values.sonar.db.name }}"
+            - name: SONARQUBE_JDBC_USERNAME
+              value: "{{ .Values.sonar.db.username }}"
+            - name: SONARQUBE_JDBC_PASSWORD
+              value: "{{ .Values.sonar.db.password }}"
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+
