@@ -1,0 +1,19 @@
+# Jenkins image settings
+namespace: jenkins
+image:
+  repository: jenkins/jenkins
+  tag: lts
+  pullPolicy: IfNotPresent
+
+# Jenkins service settings
+service:
+  type: ClusterIP
+  port: 8080
+  name: jenkins
+
+# Jenkins admin password
+adminPassword:
+  enabled: true
+  value: "admin"  # You can change this to your own password
+
+jenkinsAdminPassword: "your-jenkins-password"

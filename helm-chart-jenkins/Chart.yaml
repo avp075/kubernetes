@@ -1,0 +1,5 @@
+apiVersion: v2
+name: jenkins
+description: A simple Helm chart for Jenkins deployment without Ingress, PVC, and ConfigMap
+version: 0.1.0
+appVersion: "2.319.1"  # You can update this with the desired Jenkins version
