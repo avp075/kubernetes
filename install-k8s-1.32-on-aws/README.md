@@ -85,10 +85,6 @@ restart containerd
 
 `sudo apt-get install -y kubelet kubeadm kubectl`  
 
-# 8. Install kubectl on controlplane  
-*** Run this command on control plane node only ***  
-
-`sudo apt-get install -y kubectl`  
 
 Our nodes are ready to be setup for kubernetes!!  
 
@@ -124,21 +120,11 @@ switch to a regular user and list nodes using kubectl
 **If you have used different pod network, update custom-resources yaml file  
 
 # Setup your machine to access cluster from  
-## 1. Installing Kubectl on you machine  
-
-`echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list`
-
-`curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg`
-
-`sudo apt-get update`
-
-`sudo apt-get install -y kubectl`  
-
-## 2. Move the config file
+## 1. Move the config file to worker nodes
 `scp root@<control-plane-ip>:/etc/kubernetes/admin.conf .kube/conf`  
 
 If you can’t ssh to control plane, manually move the admin.conf to .kube/conf file/  
 
-## 3. Test and run kubectl now  
+## 2. Test and run kubectl now  
 `kubectl get nodes`  
 
