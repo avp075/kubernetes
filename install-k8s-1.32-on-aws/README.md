@@ -41,20 +41,24 @@ We need container runtime to run containers. For runtime to work, IPv4 packet fo
 # 5. Installing CNI plugins  
 CNI plugins are required for Kubernetes networking to work. When we later installed Calico networking plugin, this is a prereq 
 
-`sudo mkdir -p /opt/cni/bin` 
-`CNI_VERSION=$(curl -sSL "https://api.github.com/repos/containernetworking/plugins/releases/latest" | jq -r '.tag_name')`  
-`wget -q "https://github.com/containernetworking/plugins/releases/download/${CNI_VERSION}/cni-plugins-linux-amd64-${CNI_VERSION}.tgz"`  
+`sudo mkdir -p /opt/cni/bin`
+
+`CNI_VERSION=$(curl -sSL "https://api.github.com/repos/containernetworking/plugins/releases/latest" | jq -r '.tag_name')`
+
+`wget -q "https://github.com/containernetworking/plugins/releases/download/${CNI_VERSION}/cni-plugins-linux-amd64-${CNI_VERSION}.tgz"`
+
 `sudo tar Cxzf /opt/cni/bin "cni-plugins-linux-amd64-${CNI_VERSION}.tgz"`  
 
 # 6. Configure containerd  
 ## 6.1 Generate config file  
-`mkdir /etc/containerd` – might be there already  
-`containerd config default > /etc/containerd/config.toml`  
+`sudo mkdir /etc/containerd` – might be there already  
+
+`sudo containerd config default | sudo tee /etc/containerd/config.toml`  
 
 ## 6.2 Ensure the CRI runtime is enabled (this step may not be necessary).  
 Check if CRI is in disabled_plugins (at the top of the file ) list within /etc/containerd/config.toml  
 
-`head /etc/containerd/config.toml`  
+`sudo head /etc/containerd/config.toml`  
 restart containerd ( if performed above step)  
 `sudo systemctl restart containerd`  
 
@@ -71,8 +75,10 @@ restart containerd
 # 7. Install Kubernetes tools:  
 ## 7.1 Update system, add sha keys, and add kubernetes repo  
 
-`echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list`  
+`echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list` 
+
 `curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg`  
+
 `sudo apt update`  
 
 ## 7.2 Install Kubelet and kubeadm  
@@ -98,16 +104,20 @@ Just an example command:
 
 **make sure traffic is allowed between these nodes; otherwise, worker nodes cannot join the cluster. Check the security groups or firewall rules if necessary**  
 
-## 3. Install networking plugin – calico  
-`kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/tigera-operator.yaml`  
-`kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/custom-resources.yaml`  
+## 3. Install networking plugin – calico  (on master and worker)
+`kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/tigera-operator.yaml`
+
+`kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/custom-resources.yaml`
+
 `watch kubectl get pods -n calico-system`  
 
 **If you have used different pod network, update custom-resources yaml file  
 
 ## 4. Configure kubectl on controlplane so non-root users can use it.  
-`mkdir -p $HOME/.kube`  
-`sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config`  
+`mkdir -p $HOME/.kube`
+
+`sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config`
+
 `sudo chown $(id -u):$(id -g) $HOME/.kube/config`  
 
 switch to a regular user and list nodes using kubectl  
@@ -116,9 +126,12 @@ switch to a regular user and list nodes using kubectl
 # Setup your machine to access cluster from  
 ## 1. Installing Kubectl on you machine  
 
-`echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list`  
-`curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg`  
-`sudo apt-get update`  
+`echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list`
+
+`curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg`
+
+`sudo apt-get update`
+
 `sudo apt-get install -y kubectl`  
 
 ## 2. Move the config file
