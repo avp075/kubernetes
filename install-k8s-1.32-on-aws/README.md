@@ -104,16 +104,7 @@ Just an example command:
 
 **make sure traffic is allowed between these nodes; otherwise, worker nodes cannot join the cluster. Check the security groups or firewall rules if necessary**  
 
-## 3. Install networking plugin – calico  (on master and worker)
-`kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/tigera-operator.yaml`
-
-`kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/custom-resources.yaml`
-
-`watch kubectl get pods -n calico-system`  
-
-**If you have used different pod network, update custom-resources yaml file  
-
-## 4. Configure kubectl on controlplane so non-root users can use it.  
+## 3. Configure kubectl on controlplane so non-root users can use it.  
 `mkdir -p $HOME/.kube`
 
 `sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config`
@@ -122,6 +113,15 @@ Just an example command:
 
 switch to a regular user and list nodes using kubectl  
 `kubectl get nodes -o wide`  
+
+## 4. Install networking plugin – calico  (on master and worker)
+`kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/tigera-operator.yaml`
+
+`kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/custom-resources.yaml`
+
+`watch kubectl get pods -n calico-system`  
+
+**If you have used different pod network, update custom-resources yaml file  
 
 # Setup your machine to access cluster from  
 ## 1. Installing Kubectl on you machine  
