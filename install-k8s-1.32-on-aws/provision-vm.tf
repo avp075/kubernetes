@@ -14,21 +14,21 @@ resource "aws_instance" "controlplane" {
 
   user_data = <<-EOF
               #!/bin/bash
+              exec > /var/log/user-data.log 2>&1
               hostnamectl set-hostname controlplane
-              cd /home/ubuntu
-              git clone  https://github.com/avp075/kubernetes.git
-              cd kubernetes/install-k8s-1.32-on-aws/
+              git clone https://github.com/avp075/kubernetes.git ; cd kubernetes/install-k8s-1.32-on-aws
               chmod +x setup-masternode.sh
               ./setup-masternode.sh
               EOF
-
+  
   tags = {
     Name = "controlplane"
   }
-}
+
+} 
 
 resource "aws_instance" "worker" {
-  count         = 3
+  count         = 1
   ami          = "ami-0f9de6e2d2f067fca"
   instance_type = "t3.2xlarge"
   key_name     = "bastion-host-key"
@@ -40,17 +40,17 @@ resource "aws_instance" "worker" {
 
   user_data = <<-EOF
               #!/bin/bash
+              exec >   2>&1
               hostnamectl set-hostname worker${count.index + 1}
-              cd /home/ubuntu
-              git clone  https://github.com/avp075/kubernetes.git
-              cd kubernetes/install-k8s-1.32-on-aws/
+              git clone https://github.com/avp075/kubernetes.git ; cd kubernetes/install-k8s-1.32-on-aws
               chmod +x setup-workernode.sh
               ./setup-workernode.sh
               EOF
 
-  tags = {
+tags = {
     Name = "worker${count.index + 1}"
   }
+
 }
 
 output "controlplane_ssh" {
