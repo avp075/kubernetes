@@ -37,7 +37,10 @@ echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 sudo apt update
 sudo apt-get install -y kubelet kubeadm kubectl
-echo "[INFO] Copy kubeconfig file..." # run manually
+echo "[INFO] Setup kubeconfig file..." # run manually
+sudo mkdir -p "$HOME/.kube"
+sudo touch "$HOME/.kube/config"
+sudo chown "$(id -u)":"$(id -g)" "$HOME/.kube/config"
 #scp root@<control-plane-ip>:"$HOME/.kube/config" "$HOME/.kube/config"
 echo "[INFO] Installing Calico CNI..." # run manually
 #kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/tigera-operator.yaml

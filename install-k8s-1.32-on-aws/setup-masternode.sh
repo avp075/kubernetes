@@ -40,7 +40,8 @@ sudo apt-get install -y kubelet kubeadm kubectl
 echo "[INFO] Initializing Kubernetes control plane..."
 sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --kubernetes-version=1.32.0
 echo "[INFO] Configuring kubeconfig for current user..."
-mkdir -p "$HOME/.kube"
+sudo mkdir -p "$HOME/.kube"
+sudo touch "$HOME/.kube/config"
 sudo cp -i /etc/kubernetes/admin.conf "$HOME/.kube/config"
 sudo chown "$(id -u)":"$(id -g)" "$HOME/.kube/config"
 echo "[INFO] Installing Calico CNI..."
