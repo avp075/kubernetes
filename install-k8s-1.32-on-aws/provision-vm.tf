@@ -40,7 +40,7 @@ resource "aws_instance" "worker" {
 
   user_data = <<-EOF
               #!/bin/bash
-              exec >   2>&1
+              exec > /var/log/user-data.log 2>&1
               hostnamectl set-hostname worker${count.index + 1}
               git clone https://github.com/avp075/kubernetes.git ; cd kubernetes/install-k8s-1.32-on-aws
               chmod +x setup-workernode.sh
