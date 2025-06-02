@@ -60,10 +60,10 @@ sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --kubernetes-version=1.32.0
 
 
 echo "[INFO] Configuring kubeconfig for current user..."
-sudo mkdir -p "~/.kube/"
-sudo chown $USER ~/.kube && chmod 700 ~/.kube
-sudo cp -i /etc/kubernetes/admin.conf "~/.kube/config"
-sudo chown "$(id -u)":"$(id -g)" "~/.kube/config"
+sudo mkdir -p "/home/ubuntu/.kube/"
+sudo chown $USER /home/ubuntu/.kube && chmod 700 /home/ubuntu/.kube
+sudo cp -i /etc/kubernetes/admin.conf "/home/ubuntu/.kube/config"
+sudo chown "$(id -u)":"$(id -g)" "/home/ubuntu/.kube/config"
 
 
 echo "[INFO] Installing Calico CNI..."
