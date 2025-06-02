@@ -61,7 +61,6 @@ sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --kubernetes-version=1.32.0
 
 echo "[INFO] Configuring kubeconfig for current user..."
 sudo mkdir -p "~/.kube/"
-sudo touch "~/.kube/config"
 sudo cp -i /etc/kubernetes/admin.conf "~/.kube/config"
 sudo chown "$(id -u)":"$(id -g)" "~/.kube/config"
 
