@@ -63,6 +63,7 @@ echo "[INFO] Configuring kubeconfig for current user..."
 sudo mkdir -p "/home/ubuntu/.kube/"
 sudo cp -i /etc/kubernetes/admin.conf "/home/ubuntu/.kube/config"
 sudo chown ubuntu:ubuntu /home/ubuntu/.kube/config
+sudo chmod 644 "/home/ubuntu/.kube/config"
 
 
 echo "[INFO] Installing Calico CNI..."
