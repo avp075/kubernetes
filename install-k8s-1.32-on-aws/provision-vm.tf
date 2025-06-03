@@ -46,7 +46,7 @@ resource "aws_instance" "worker" {
               #!/bin/bash
               exec > /var/log/user-data.log 2>&1
               hostnamectl set-hostname worker${count.index + 1}
-              sudo apt install -y awscli
+              sudo apt update ; sudo apt install -y awscli
               sudo mkdir -p "/home/ubuntu/.kube/"
               sleep 20
               aws secretsmanager get-secret-value   --secret-id my-kubeconfig   --query SecretString   --output text   --region us-east-1 > /home/ubuntu/.kube/config
