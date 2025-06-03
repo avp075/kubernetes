@@ -58,6 +58,7 @@ sudo apt-get install -y kubelet kubeadm kubectl
 
 echo "[INFO] Setup kubeconfig file..." # run manually
 sudo mkdir -p "/home/ubuntu/.kube/"
+sudo touch /home/ubuntu/.kube/config
 sudo chown ubuntu:ubuntu /home/ubuntu/.kube/config
 sudo chmod 644 "/home/ubuntu/.kube/config"
 #scp root@<control-plane-ip>:"~/.kube/config" "~/.kube/config"

@@ -67,9 +67,10 @@ sudo chmod 644 "/home/ubuntu/.kube/config"
 
 
 echo "[INFO] Installing Calico CNI..."
+sudo su - ubuntu
 wget "https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/tigera-operator.yaml"
-kubectl create -f tigera-operator.yaml
+kubectl appy -f tigera-operator.yaml
 wget "https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/custom-resources.yaml"
-kubectl create -f custom-resources.yaml
+kubectl apply -f custom-resources.yaml
 
 echo "[INFO] Control plane setup completed on Ubuntu."
