@@ -68,7 +68,7 @@ sudo chmod +r "/home/ubuntu/.kube/config"
 
 
 echo "[INFO] Installing Calico CNI..."
-kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/tigera-operator.yaml
-kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/custom-resources.yaml
+sudo kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/tigera-operator.yaml
+sudo kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/custom-resources.yaml
 
 echo "[INFO] Control plane setup completed on Ubuntu."
