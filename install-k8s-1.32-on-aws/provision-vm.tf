@@ -22,8 +22,7 @@ resource "aws_instance" "controlplane" {
               chmod +x setup-masternode.sh
               ./setup-masternode.sh
               base64 /home/ubuntu/.kube/config > encoded_kubeconfig.b64
-              aws secretsmanager create-secret  --name kubeconfig-base64  --secret-string file://encoded_kubeconfig.b64  --region us-east-1
-              #aws secretsmanager put-secret-value   --secret-id kubeconfig-base64 --secret-string file://encoded_kubeconfig.b64   --region us-east-1
+              aws secretsmanager put-secret-value   --secret-id kubeconfig-base64 --secret-string file://encoded_kubeconfig.b64   --region us-east-1
               EOF
   
   tags = {
