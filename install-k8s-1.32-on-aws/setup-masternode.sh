@@ -65,10 +65,11 @@ sudo mkdir -p "/home/ubuntu/.kube/"
 sudo cp -i /etc/kubernetes/admin.conf "/home/ubuntu/.kube/config"
 sudo chown ubuntu:ubuntu /home/ubuntu/.kube/config
 sudo chmod +r "/home/ubuntu/.kube/config"
+export KUBECONFIG=/home/ubuntu/.kube/config
 
 
 echo "[INFO] Installing Calico CNI..."
-sudo kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/tigera-operator.yaml
-sudo kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/custom-resources.yaml
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/tigera-operator.yaml
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/custom-resources.yaml
 
 echo "[INFO] Control plane setup completed on Ubuntu."
