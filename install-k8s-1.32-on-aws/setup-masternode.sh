@@ -69,7 +69,7 @@ sudo chmod 644 "/home/ubuntu/.kube/config"
 echo "[INFO] Installing Calico CNI..."
 sudo su - ubuntu
 wget "https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/tigera-operator.yaml"
-kubectl appy -f tigera-operator.yaml
+kubectl apply -f tigera-operator.yaml
 wget "https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/custom-resources.yaml"
 kubectl apply -f custom-resources.yaml
 
