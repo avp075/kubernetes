@@ -61,7 +61,6 @@ echo "[INFO] Setup kubeconfig file..."
 #sudo touch /home/ubuntu/.kube/config
 #sudo chown ubuntu:ubuntu /home/ubuntu/.kube/config
 #sudo chmod 644 "/home/ubuntu/.kube/config"
-export KUBECONFIG=/home/ubuntu/.kube/config
 
 echo "[INFO] Installing Calico CNI..." 
 kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/tigera-operator.yaml
