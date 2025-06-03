@@ -60,17 +60,15 @@ sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --kubernetes-version=1.32.0
 
 
 echo "[INFO] Configuring kubeconfig for current user..."
+sudo su - ubuntu
 sudo mkdir -p "/home/ubuntu/.kube/"
 sudo cp -i /etc/kubernetes/admin.conf "/home/ubuntu/.kube/config"
 sudo chown ubuntu:ubuntu /home/ubuntu/.kube/config
-sudo chmod 644 "/home/ubuntu/.kube/config"
+sudo chmod +r "/home/ubuntu/.kube/config"
 
 
 echo "[INFO] Installing Calico CNI..."
-sudo su - ubuntu
-wget "https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/tigera-operator.yaml"
-kubectl apply -f tigera-operator.yaml
-wget "https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/custom-resources.yaml"
-kubectl apply -f custom-resources.yaml
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/tigera-operator.yaml
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/custom-resources.yaml
 
 echo "[INFO] Control plane setup completed on Ubuntu."
