@@ -21,7 +21,8 @@ resource "aws_instance" "controlplane" {
               git clone https://github.com/avp075/kubernetes.git ; cd kubernetes/install-k8s-1.32-on-aws
               chmod +x setup-masternode.sh
               ./setup-masternode.sh
-              aws secretsmanager put-secret-value   --secret-id my-kubeconfig  --secret-string file:///home/ubuntu/.kube/config   --region us-east-1
+              base64 /home/ubuntu/.kube/config > encoded_kubeconfig.b64
+              aws secretsmanager put-secret-value   --secret-id kubeconfig-base64 --secret-string file://encoded_kubeconfig.b64   --region us-east-1
               EOF
   
   tags = {
@@ -49,7 +50,7 @@ resource "aws_instance" "worker" {
               sudo apt update ; sudo apt install -y awscli
               sudo mkdir -p "/home/ubuntu/.kube/"
               sleep 20
-              aws secretsmanager get-secret-value   --secret-id my-kubeconfig   --query SecretString   --output text   --region us-east-1 > /home/ubuntu/.kube/config
+              aws secretsmanager get-secret-value --secret-id kubeconfig-base64 --query SecretString --output text --region us-east-1 | base64 -d > /home/ubuntu/.kube/config
               chown ubuntu:ubuntu /home/ubuntu/.kube/config ; chmod 644 /home/ubuntu/.kube/config
               export KUBECONFIG=/home/ubuntu/.kube/config
               git clone https://github.com/avp075/kubernetes.git ; cd kubernetes/install-k8s-1.32-on-aws
