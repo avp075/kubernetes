@@ -16,7 +16,7 @@ resource "aws_instance" "controlplane" {
   user_data = <<-EOF
               #!/bin/bash
               exec > /var/log/user-data.log 2>&1
-              sudo apt install -y awscli
+              sudo apt update ; sudo apt install -y awscli
               hostnamectl set-hostname controlplane
               git clone https://github.com/avp075/kubernetes.git ; cd kubernetes/install-k8s-1.32-on-aws
               chmod +x setup-masternode.sh
