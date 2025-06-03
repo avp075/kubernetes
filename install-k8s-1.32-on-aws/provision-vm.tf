@@ -7,7 +7,7 @@ resource "aws_instance" "controlplane" {
   instance_type = "t3.2xlarge"
   key_name      = "bastion-host-key"
   security_groups = ["controlplane"]
-  iam_instance_profile = aws_iam_instance_profile.secrets_manager_profile.name
+  iam_instance_profile = aws_iam_instance_profile.ec2_s3_profile.name
 
   root_block_device {
     volume_size = 30
@@ -21,8 +21,7 @@ resource "aws_instance" "controlplane" {
               git clone https://github.com/avp075/kubernetes.git ; cd kubernetes/install-k8s-1.32-on-aws
               chmod +x setup-masternode.sh
               ./setup-masternode.sh
-              base64 /home/ubuntu/.kube/config > encoded_kubeconfig.b64
-              aws secretsmanager put-secret-value   --secret-id kubeconfig-base64 --secret-string file://encoded_kubeconfig.b64   --region us-east-1
+              aws s3 cp /home/ubuntu/.kube/config s3://kubeconfig-bucket-avp/kubeconfig
               EOF
   
   tags = {
@@ -37,7 +36,7 @@ resource "aws_instance" "worker" {
   instance_type = "t3.2xlarge"
   key_name     = "bastion-host-key"
   security_groups = ["workernode"]
-  iam_instance_profile = aws_iam_instance_profile.secrets_manager_profile.name
+  iam_instance_profile = aws_iam_instance_profile.ec2_s3_profile.name
 
   root_block_device {
     volume_size = 30
@@ -48,10 +47,10 @@ resource "aws_instance" "worker" {
               exec > /var/log/user-data.log 2>&1
               hostnamectl set-hostname worker${count.index + 1}
               sudo apt update ; sudo apt install -y awscli
-              sudo mkdir -p "/home/ubuntu/.kube/"
-              sleep 20
-              aws secretsmanager get-secret-value --secret-id kubeconfig-base64 --query SecretString --output text --region us-east-1 | base64 -d > /home/ubuntu/.kube/config
-              chown ubuntu:ubuntu /home/ubuntu/.kube/config ; chmod 644 /home/ubuntu/.kube/config
+              mkdir -p /home/ubuntu/.kube
+              aws s3 cp s3://kubeconfig-bucket-avp/kubeconfig /home/ubuntu/.kube/config
+              chown -R ubuntu:ubuntu /home/ubuntu/.kube
+              chmod 644 /home/ubuntu/.kube/config
               export KUBECONFIG=/home/ubuntu/.kube/config
               git clone https://github.com/avp075/kubernetes.git ; cd kubernetes/install-k8s-1.32-on-aws
               chmod +x setup-workernode.sh
@@ -64,32 +63,31 @@ tags = {
 
 }
 
-resource "aws_iam_role" "secrets_manager_role" {
-  name = "ec2-secretsmanager-role"
+resource "aws_iam_role" "ec2_s3_role" {
+  name = "ec2-s3-full-access-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
-    Statement = [
-      {
-        Effect = "Allow",
-        Principal = {
-          Service = "ec2.amazonaws.com"
-        },
-        Action = "sts:AssumeRole"
-      }
-    ]
+    Statement = [{
+      Effect = "Allow",
+      Principal = {
+        Service = "ec2.amazonaws.com"
+      },
+      Action = "sts:AssumeRole"
+    }]
   })
 }
 
-resource "aws_iam_role_policy_attachment" "secrets_manager_access" {
-  role       = aws_iam_role.secrets_manager_role.name
-  policy_arn = "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
+resource "aws_iam_role_policy_attachment" "s3_full_access" {
+  role       = aws_iam_role.ec2_s3_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 }
 
-resource "aws_iam_instance_profile" "secrets_manager_profile" {
-  name = "ec2-secretsmanager-instance-profile"
-  role = aws_iam_role.secrets_manager_role.name
+resource "aws_iam_instance_profile" "ec2_s3_profile" {
+  name = "ec2-s3-full-access-profile"
+  role = aws_iam_role.ec2_s3_role.name
 }
+
 
 
 output "controlplane_ssh" {
