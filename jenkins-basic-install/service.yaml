@@ -5,8 +5,8 @@ metadata:
 spec:
   selector:
     app: jenkins
-  type: ClusterIP
+  type: NodePort
   ports:
-  - protocol: TCP
+  - nodePort: 32000
     port: 8080
     targetPort: 8080
