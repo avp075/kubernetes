@@ -7,6 +7,9 @@ exec > /var/log/user-data.log 2>&1
 
 KUBE_VERSION=1.31
 
+#Set Hostname
+hostnamectl set-hostname master
+
 #Update System Packages
 sudo apt-get update
 sudo apt-get upgrade -y
@@ -22,8 +25,7 @@ sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 sudo apt-get install -y containerd
 sudo mkdir -p /etc/containerd
 sudo containerd config default | sudo tee /etc/containerd/config.toml > /dev/null
-sudo sed -i 's|SandboxImage = ".*"|SandboxImage = "registry.k8s.io/pause:3.10"|' /etc/containerd/config.toml && 
-sudo systemctl restart containerd
+sudo sed -i '/SandboxImage/s|".*"|"registry.k8s.io/pause:3.10"|' /etc/containerd/config.toml 
 
 #Enable SystemdCgroup
 sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.toml
@@ -40,7 +42,6 @@ echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.
 sudo apt-get update
 sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl       #apt-mark hold ensures these packages aren’t upgraded unintentionally.
-
 
 #Load Required Kernel Modules
 cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
@@ -64,13 +65,8 @@ sudo sysctl --system
 # export KUBECONFIG=$HOME/.kube/config
 
 
-##Install Calico CNI (For v1.31 Compatibility)
-# kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/tigera-operator.yaml
-# kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/custom-resources.yaml
-# kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/calico.yaml
-
-# kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/tigera-operator.yaml
-# curl https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/custom-resources.yaml -O 
+##Install Calico CNI (For v1.31 Compatibility). This installs the Tigera Operator, which manages the Calico automatically
+# kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/tigera-operator.yaml   
 # kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/custom-resources.yaml
 
 # run kubeadm join command from the output of below command on worker nodes to join the cluster
@@ -80,3 +76,10 @@ echo "\ndone for master node setup!!!. Run kubeadm init on master then run kubea
 
 
 # tail -100f /var/log/user-data.log 
+
+# Use IP:Port to test the nginx service from outside the cluster
+# kubectl create deployment nginx-deployment --image=nginx:latest --replicas=3
+# kubectl expose deployment nginx-deployment --name=nginx-service --port=80 --target-port=80 --type=NodePort
+
+##fix worker nodes label
+# kubectl label node ip-172-31-66-147 node-role.kubernetes.io/worker=worker

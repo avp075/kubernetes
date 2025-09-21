@@ -15,7 +15,7 @@ resource "aws_instance" "controlplane" {
   user_data = file("${path.module}/setup-masternode.sh")
 
   tags = {
-    Name = "controlplane"
+    Name = "master"
   }
 }
 
@@ -40,12 +40,12 @@ resource "aws_instance" "worker" {
 
 output "controlplane_ssh" {
   description = "SSH command for controlplane"
-  value       = "ssh -i bastion-host-key.pem ubuntu@${aws_instance.controlplane.public_ip}"
+  value       = "ssh -o StrictHostKeyChecking=no -i bastion-host-key.pem ubuntu@${aws_instance.controlplane.public_ip}"
 }
 
 output "worker_ssh_commands" {
   description = "SSH commands for worker nodes"
   value = [
-    for i in aws_instance.worker : "ssh -i bastion-host-key.pem ubuntu@${i.public_ip}"
+    for i in aws_instance.worker : "ssh -o StrictHostKeyChecking=no -i bastion-host-key.pem ubuntu@${i.public_ip}"
   ]
 }

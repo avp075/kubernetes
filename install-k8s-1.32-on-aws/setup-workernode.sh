@@ -11,6 +11,9 @@ KUBE_VERSION=1.31
 sudo apt-get update
 sudo apt-get upgrade -y
 
+#Set Hostname
+hostnamectl set-hostname worker
+
 #Install Required Packages
 sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common gnupg2
 
@@ -49,6 +52,6 @@ EOF
 
 sudo sysctl --system
 
-echo "\n done for worker node setup. Now run the kubeadm join on worker nodes command after CNI installation!!!\n"
+echo "\n done for worker node setup. Now get the kubeadm join command from master and run of worker nodes !!!\n"
 
 # tail -100f /var/log/user-data.log 
