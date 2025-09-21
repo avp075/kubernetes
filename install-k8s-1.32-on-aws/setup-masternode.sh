@@ -1,75 +1,82 @@
-#!/bin/bash
-set -euo pipefail
-IFS=$'\n\t'
+#!/bin/sh
 
-echo "[INFO] Disabling swap..."
-sudo swapoff -a
-#sudo sed -i.bak '/ swap / s/^\(.*\)$/#\1/' /etc/fstab
+set -ex
 
+exec > /var/log/user-data.log 2>&1
+# Source: https://kubernetes.io/docs/reference/setup-tools/kubeadm
 
-echo "[INFO] Loading kernel modules..."
-sudo modprobe overlay
-sudo modprobe br_netfilter
+KUBE_VERSION=1.31
 
-
-echo "[INFO] Setting sysctl parameters..."
-cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
-net.bridge.bridge-nf-call-iptables  = 1
-net.ipv4.ip_forward                 = 1
-net.bridge.bridge-nf-call-ip6tables = 1
-EOF
-sudo sysctl --system
-
-
-echo "[INFO] Installing containerd..."
+#Update System Packages
 sudo apt-get update
-sudo apt-get install -y containerd jq
+sudo apt-get upgrade -y
 
+#Install Required Packages
+sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common gnupg2
 
-echo "[INFO] Installing CNI plugin..."
-sudo mkdir -p /opt/cni/bin
-CNI_VERSION=$(curl -sSL "https://api.github.com/repos/containernetworking/plugins/releases/latest" | jq -r '.tag_name')
-wget -q "https://github.com/containernetworking/plugins/releases/download/${CNI_VERSION}/cni-plugins-linux-amd64-${CNI_VERSION}.tgz"
-sudo tar Cxzf /opt/cni/bin "cni-plugins-linux-amd64-${CNI_VERSION}.tgz"
+#Disable Swap (Required for K8s)
+sudo swapoff -a
+sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 
-
-echo "[INFO] Configuring containerd..."
+#Install and Configure containerd
+sudo apt-get install -y containerd
 sudo mkdir -p /etc/containerd
-sudo containerd config default | sudo tee /etc/containerd/config.toml
+sudo containerd config default | sudo tee /etc/containerd/config.toml > /dev/null
+sudo sed -i 's|SandboxImage = ".*"|SandboxImage = "registry.k8s.io/pause:3.10"|' /etc/containerd/config.toml && 
+sudo systemctl restart containerd
 
-
-echo "[INFO] Setting systemd as cgroup driver (step 1)..."
-sudo sed -i 's/^\s*SystemdCgroup\s*=.*/    SystemdCgroup = true/' /etc/containerd/config.toml
-
-
-echo "[INFO] Update sandbox image..."
-sudo sed -i 's#^\s*sandbox_image\s*=.*#    sandbox_image = "registry.k8s.io/pause:3.10"#' /etc/containerd/config.toml
+#Enable SystemdCgroup
+sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.toml
 sudo systemctl restart containerd
 sudo systemctl enable containerd
 
 
-echo "[INFO] Installing kubernetes tools..."
-echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list
-curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-sudo apt update
+#Add Kubernetes v1.31 APT Repository
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key |
+sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+#Install Kubernetes Components
+sudo apt-get update
 sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-mark hold kubelet kubeadm kubectl       #apt-mark hold ensures these packages aren’t upgraded unintentionally.
 
 
-echo "[INFO] Initializing Kubernetes control plane..."
-sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --kubernetes-version=1.32.0
+#Load Required Kernel Modules
+cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+net.ipv4.ip_forward                 = 1
+EOF
+
+sudo sysctl --system
 
 
-echo "[INFO] Configuring kubeconfig for current user..."
-sudo su - ubuntu
-sudo mkdir -p "/home/ubuntu/.kube/"
-sudo cp -i /etc/kubernetes/admin.conf "/home/ubuntu/.kube/config"
-sudo chown ubuntu:ubuntu /home/ubuntu/.kube/config
-sudo chmod +r "/home/ubuntu/.kube/config"
-export KUBECONFIG=/home/ubuntu/.kube/config
+##Initialize Kubernetes Control Plane
+# PRIVATE_IP=$(hostname -I | awk '{print $1}') ; echo $PRIVATE_IP
+# sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --apiserver-advertise-address=$PRIVATE_IP
 
 
-echo "[INFO] Installing Calico CNI..."
-kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/tigera-operator.yaml
-kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/custom-resources.yaml
+##Set up kubectl for your user on master node
+# mkdir -p $HOME/.kube
+# sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+# sudo chown $(id -u):$(id -g) $HOME/.kube/config
+# export KUBECONFIG=$HOME/.kube/config
 
-echo "[INFO] Control plane setup completed on Ubuntu."
+
+##Install Calico CNI (For v1.31 Compatibility)
+# kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/tigera-operator.yaml
+# kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/custom-resources.yaml
+# kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/calico.yaml
+
+# kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/tigera-operator.yaml
+# curl https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/custom-resources.yaml -O 
+# kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/custom-resources.yaml
+
+# run kubeadm join command from the output of below command on worker nodes to join the cluster
+# kubeadm token create --print-join-command     
+
+echo "\ndone for master node setup!!!. Run kubeadm init on master then run kubeadm join on all worker nodes to join the cluster\n"
+
+
+# tail -100f /var/log/user-data.log 
