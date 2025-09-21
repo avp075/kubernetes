@@ -81,5 +81,8 @@ echo "\ndone for master node setup!!!. Run kubeadm init on master then run kubea
 # kubectl create deployment nginx-deployment --image=nginx:latest --replicas=3
 # kubectl expose deployment nginx-deployment --name=nginx-service --port=80 --target-port=80 --type=NodePort
 
+
 ##fix worker nodes label
 # kubectl label node ip-172-31-66-147 node-role.kubernetes.io/worker=worker
+
+# kubectl get all -A
