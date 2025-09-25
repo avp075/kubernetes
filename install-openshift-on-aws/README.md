@@ -34,4 +34,5 @@ openshift-install create install-config --dir=./
              replicas: 1
 ```
 ```openshift-install create cluster --dir=./ --log-level=debug```
+
 ```openshift-install destroy cluster --dir=./ --log-level=debug```
