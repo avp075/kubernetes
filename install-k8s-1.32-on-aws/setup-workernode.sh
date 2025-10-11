@@ -12,7 +12,7 @@ sudo apt-get update
 sudo apt-get upgrade -y
 
 #Set Hostname
-hostnamectl set-hostname worker
+sudo hostnamectl set-hostname "worker-$(hostname -I | awk '{print $1}')"
 
 #Install Required Packages
 sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common gnupg2
@@ -52,6 +52,8 @@ EOF
 
 sudo sysctl --system
 
-echo "\n done for worker node setup. Now get the kubeadm join command from master and run of worker nodes !!!\n"
+echo ""
+echo "done for worker node setup. Now get the kubeadm join command from master and run of worker nodes !!!"
+echo ""
 
 # tail -100f /var/log/user-data.log 

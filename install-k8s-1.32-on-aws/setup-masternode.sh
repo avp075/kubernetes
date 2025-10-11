@@ -8,7 +8,7 @@ exec > /var/log/user-data.log 2>&1
 KUBE_VERSION=1.31
 
 #Set Hostname
-hostnamectl set-hostname master
+sudo hostnamectl set-hostname "master-$(hostname -I | awk '{print $1}')"
 
 #Update System Packages
 sudo apt-get update
@@ -40,7 +40,7 @@ echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.
 
 #Install Kubernetes Components
 sudo apt-get update
-sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-get install -y kubelet kubeadm kubectl awscli
 sudo apt-mark hold kubelet kubeadm kubectl       #apt-mark hold ensures these packages aren’t upgraded unintentionally.
 
 #Load Required Kernel Modules
@@ -72,8 +72,9 @@ sudo sysctl --system
 # run kubeadm join command from the output of below command on worker nodes to join the cluster
 # kubeadm token create --print-join-command     
 
-echo "\ndone for master node setup!!!. Run kubeadm init on master then run kubeadm join on all worker nodes to join the cluster\n"
-
+echo ""
+echo "done for master node setup!!!. Run kubeadm init on master then run kubeadm join on all worker nodes to join the cluster.."
+echo ""
 
 # tail -100f /var/log/user-data.log 
 

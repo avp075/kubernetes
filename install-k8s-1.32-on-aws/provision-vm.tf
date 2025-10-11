@@ -6,7 +6,7 @@ resource "aws_instance" "controlplane" {
   ami           = "ami-0f9de6e2d2f067fca"
   instance_type = "t3.2xlarge"
   key_name      = "bastion-host-key"
-  security_groups = ["controlplane"]
+  security_groups = ["master-sg"]
 
   root_block_device {
     volume_size = 50
@@ -24,7 +24,7 @@ resource "aws_instance" "worker" {
   ami          = "ami-0f9de6e2d2f067fca"
   instance_type = "t3.2xlarge"
   key_name     = "bastion-host-key"
-  security_groups = ["workernode"]
+  security_groups = ["worker-sg"]
 
   root_block_device {
     volume_size = 50
