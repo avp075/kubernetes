@@ -4,7 +4,6 @@ set -ex
 
 exec > /var/log/user-data.log 2>&1
 # Source: https://kubernetes.io/docs/reference/setup-tools/kubeadm
-
 KUBE_VERSION=1.31
 
 #Update System Packages
@@ -12,7 +11,7 @@ sudo apt-get update
 sudo apt-get upgrade -y
 
 #Set Hostname
-sudo hostnamectl set-hostname "worker-$(hostname -I | awk '{print $1}')"
+#sudo hostnamectl set-hostname "worker-$(hostname -I | awk '{print $1}')"
 
 #Install Required Packages
 sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common gnupg2

@@ -8,7 +8,7 @@ exec > /var/log/user-data.log 2>&1
 KUBE_VERSION=1.31
 
 #Set Hostname
-sudo hostnamectl set-hostname "master-$(hostname -I | awk '{print $1}')"
+#sudo hostnamectl set-hostname "master-$(hostname -I | awk '{print $1}')"
 
 #Update System Packages
 sudo apt-get update
@@ -40,7 +40,7 @@ echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.
 
 #Install Kubernetes Components
 sudo apt-get update
-sudo apt-get install -y kubelet kubeadm kubectl awscli
+sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl       #apt-mark hold ensures these packages aren’t upgraded unintentionally.
 
 #Load Required Kernel Modules

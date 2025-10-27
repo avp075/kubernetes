@@ -1,9 +1,10 @@
 provider "aws" {
-  region = "us-east-1" 
+  region = "us-east-2" 
 }
 
 resource "aws_instance" "controlplane" {
-  ami           = "ami-0f9de6e2d2f067fca"
+  #ami          = "ami-0f9de6e2d2f067fca" # us-east-1
+  ami          = "ami-0cfde0ea8edd312d4" # us-east-2
   instance_type = "t3.2xlarge"
   key_name      = "bastion-host-key"
   security_groups = ["master-sg"]
@@ -21,7 +22,8 @@ resource "aws_instance" "controlplane" {
 
 resource "aws_instance" "worker" {
   count         = 3
-  ami          = "ami-0f9de6e2d2f067fca"
+  #ami          = "ami-0f9de6e2d2f067fca" # us-east-1
+  ami          = "ami-0cfde0ea8edd312d4" # us-east-2
   instance_type = "t3.2xlarge"
   key_name     = "bastion-host-key"
   security_groups = ["worker-sg"]
