@@ -27,7 +27,7 @@ resource "aws_instance" "worker" {
   instance_type = "t3.2xlarge"
   key_name     = "bastion-host-key"
   security_groups = ["worker-sg"]
-
+  iam_instance_profile = aws_iam_instance_profile.alb_controller_instance_profile.name
   root_block_device {
     volume_size = 50
   }
