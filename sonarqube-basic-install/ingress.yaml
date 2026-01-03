@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    name: blog-app-ingress
+    namespace: sonarqube-ns
+    annotations:
+        alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+        alb.ingress.kubernetes.io/load-balancer-name: sonarqube-app-alb
+        alb.ingress.kubernetes.io/scheme: internet-facing
+        alb.ingress.kubernetes.io/target-type: instance
+        alb.ingress.kubernetes.io/tags: app=sonarqube, devops-demo=true
+spec:
+  ingressClassName: alb
+  rules:
+    - host: sonarqube.avpcode.in
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: "sonarqube-service"
+                port:
+                  number: 9000
