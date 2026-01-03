@@ -4,7 +4,7 @@
 resource "aws_iam_policy" "alb_controller_policy" {
   name        = "AWSLoadBalancerControllerNonEKS"
   description = "Policy for AWS Load Balancer Controller (non-EKS)"
-  policy      = file("${path.module}/aws-load-balancer-controller-policy.json")
+  policy      = file("${path.module}/iam-policy/aws-load-balancer-controller-policy.json")
 }
 
 # ----------------------------------------------------------
@@ -12,7 +12,7 @@ resource "aws_iam_policy" "alb_controller_policy" {
 # ----------------------------------------------------------
 resource "aws_iam_role" "alb_controller_role" {
   name               = "AWSLoadBalancerControllerRole"
-  assume_role_policy = file("${path.module}/trust-policy.json")
+  assume_role_policy = file("${path.module}/iam-policy/trust-policy.json")
 }
 
 # ----------------------------------------------------------

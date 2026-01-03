@@ -9,6 +9,7 @@ KUBE_VERSION=1.31
 #Update System Packages
 sudo apt-get update
 sudo apt-get upgrade -y
+sudo apt install conntrack -y
 
 #Set Hostname
 #sudo hostnamectl set-hostname "worker-$(hostname -I | awk '{print $1}')"

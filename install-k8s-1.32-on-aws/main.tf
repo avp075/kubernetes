@@ -1,19 +1,19 @@
 provider "aws" {
-  region = "us-east-2" 
+  region = "us-east-2"
 }
 
 resource "aws_instance" "controlplane" {
   #ami          = "ami-0f9de6e2d2f067fca" # us-east-1
-  ami          = "ami-0cfde0ea8edd312d4" # us-east-2
-  instance_type = "t3.2xlarge"
-  key_name      = "bastion-host-key"
+  ami             = "ami-0cfde0ea8edd312d4" # us-east-2
+  instance_type   = "t3.xlarge"
+  key_name        = "bastion-host-key"
   security_groups = ["master-sg"]
-
+  iam_instance_profile = aws_iam_instance_profile.alb_controller_instance_profile.name
   root_block_device {
     volume_size = 50
   }
 
-  user_data = file("${path.module}/setup-masternode.sh")
+  user_data = file("${path.module}/scripts/setup-masternode.sh")
 
   tags = {
     Name = "master"
@@ -21,19 +21,19 @@ resource "aws_instance" "controlplane" {
 }
 
 resource "aws_instance" "worker" {
-  count         = 3
+  count = 3
   #ami          = "ami-0f9de6e2d2f067fca" # us-east-1
-  ami          = "ami-0cfde0ea8edd312d4" # us-east-2
-  instance_type = "t3.2xlarge"
-  key_name     = "bastion-host-key"
-  security_groups = ["worker-sg"]
+  ami                  = "ami-0cfde0ea8edd312d4" # us-east-2
+  instance_type        = "t3.xlarge"
+  key_name             = "bastion-host-key"
+  security_groups      = ["worker-sg"]
   iam_instance_profile = aws_iam_instance_profile.alb_controller_instance_profile.name
   root_block_device {
     volume_size = 50
   }
 
 
-  user_data = file("${path.module}/setup-workernode.sh")
+  user_data = file("${path.module}/scripts/setup-workernode.sh")
 
   tags = {
     Name = "worker${count.index + 1}"
