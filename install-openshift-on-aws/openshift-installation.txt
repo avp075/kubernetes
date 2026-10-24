@@ -1,0 +1,78 @@
+
+
+https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.22.1/
+https://console.redhat.com/
+
+aws configure
+
+route 53 hosted zone
+
+download pull secret
+
+ssh-keygen -t ed25519 -N '' -f <path>/<file_name>
+ 
+Specifies the path and file name, such as
+~/.ssh/id_ed25519
+
+
+➜  openshift ll
+total 1.4G
+-rw-r--r-- 1 aviral aviral  950 Jun  8 10:46 README.md
+-rwxr-xr-x 2 aviral aviral 130M Jun  8 10:46 kubectl
+-rwxr-xr-x 2 aviral aviral 130M Jun  8 10:46 oc
+-rw-r--r-- 1 aviral aviral  42M Jun 12 10:58 openshift-client-linux-4.22.1.tar.gz
+-rwxrwxrwx 1 aviral aviral 665M Jun  9 06:35 openshift-install
+-rw-r--r-- 1 aviral aviral 436M Jun 12 10:58 openshift-install-linux.tar.gz
+drwxr-xr-x 5 aviral aviral 4.0K Oct 24 02:37 run-setup
+-rw-r----- 1 aviral aviral 1.4K Oct 24 01:19 terraform.platform.auto.tfvars.json
+-rw-r----- 1 aviral aviral 328K Oct 24 01:19 terraform.tfvars.json
+➜  openshift
+
+mkdir my-openshift-cluster
+
+cd my-openshift-cluster
+
+openshift-install create install-config --dir=.
+
+openshift-install create cluster --dir=<installation_directory> --log-level=info
+
+
+openshift-install wait-for bootstrap-complete --dir=<installation_directory> --log-level=info
+
+openshift-install wait-for install-complete --dir=<installation_directory>
+
+
+$env:KUBECONFIG="<installation_directory>\auth\kubeconfig"
+
+
+oc get nodes
+
+
+
+set KUBECONFIG=<installation_directory>\auth\kubeconfig
+
+oc get nodes
+
+
+openshift-install destroy cluster --dir=<installation_directory> --log-level=info
+
+
+INFO Finished destroying bootstrap resources
+INFO Waiting up to 40m0s (until 3:17AM PDT) for the cluster at https://api.demo.avpcode.in:6443 to initialize...
+
+
+
+
+
+INFO Waiting up to 30m0s (until 3:16AM PDT) to ensure each cluster operator has finished progressing...
+INFO All cluster operators have completed progressing
+INFO Checking to see if there is a route at openshift-console/console...
+INFO Install complete!
+INFO To access the cluster as the system:admin user when using 'oc', run
+INFO     export KUBECONFIG=/home/aviral/openshift/run-setup/auth/kubeconfig
+INFO Access the OpenShift web-console here: https://console-openshift-console.apps.demo.avpcode.in
+INFO Login to the console with user: "kubeadmin", and password: "IQodK-KQWLk-cq7r7-hwDoj"
+INFO Time elapsed: 36m46s
+➜  openshift
+➜  openshift
+➜  openshift
